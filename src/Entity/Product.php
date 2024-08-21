@@ -9,18 +9,18 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Id] // This property is used to uniquely identify each product
+    #[ORM\GeneratedValue] // This property is used to automatically generate a unique ID for each product
+    #[ORM\Column] // This property is used to map the ID column in the database
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255)] // This property is used to store the name of the product
     private ?string $name = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)] // This property is used to store the description of the product
     private ?string $description = null;
 
-    #[ORM\Column]
+    #[ORM\Column] // This property is used to store the price of the product
     private ?int $price = null;
 
     public function getId(): ?int
@@ -64,6 +64,10 @@ class Product
         return $this;
     }
 
+    /**
+     * This method returns an array of the Product entity's properties
+     * in a JSON format for the response.
+     */
     public function toJson(): array
     {
         return [

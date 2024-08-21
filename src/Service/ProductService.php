@@ -12,12 +12,22 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class ProductService
 {
 
+    /**
+     * This constructor is used to inject dependencies into the ProductService class.
+     * ProductRepository is used to interact with the database using Doctrine.
+     * EntityManagerInterface is used to persist and flush the data to the database.
+     * ValidatorInterface is used to validate the request data.
+     */
     public function __construct(
         private ProductRepository $productRepository,
         private EntityManagerInterface $entityManager,
         private ValidatorInterface $validator
     ) {}
 
+    /**
+     * This method returns an array of all products in the database
+     * and mapped to a JSON format for the response.
+     */
     public function products(): array
     {
         return array_map(fn(Product $product) => $product->toJson(),
@@ -26,6 +36,9 @@ class ProductService
     }
 
     /**
+     * This method creates a new product in the database.
+     * It validates the request data and saves it to the database.
+     * If the validation fails, it throws an exception.
      * @throws \InvalidArgumentException
      */
     public function create(Request $request): array
@@ -38,6 +51,12 @@ class ProductService
         return $product->toJson();
     }
 
+    /**
+     * This method updates an existing product in the database.
+     * It validates the request data and saves it to the database.
+     * If the validation fails, it throws an exception.
+     * @throws \InvalidArgumentException
+     */
     public function update(Request $request, Product $product): array
     {
         $product = $this->save($product, $this->validated($request));
@@ -47,6 +66,9 @@ class ProductService
     }
 
     /**
+     * This method validates the request data and returns a ProductDTO object.
+     * If the validation fails, it loops through the errors and throws an exception.
+     * The method is used to validate the request data before saving it to the database.
      * @throws \InvalidArgumentException
      */
     private function validated(Request $request): ProductDTO
@@ -72,6 +94,10 @@ class ProductService
         return $productDTO;
     }
 
+    /**
+     * This method initializes either new or existing Product entity
+     * with the validated ProductDTO data and returns it.
+     */
     private function save(Product $product, ProductDTO $productDTO): Product
     {
         $product->setName($productDTO->name);
@@ -80,6 +106,9 @@ class ProductService
         return $product;
     }
 
+    /**
+     * This method deletes a product from the database.
+     */
     public function delete(Product $product): void
     {
         $this->entityManager->remove($product);
